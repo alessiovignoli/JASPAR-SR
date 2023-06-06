@@ -232,10 +232,17 @@ def ScoreAlignmentResult(resultDict, scoreDict, applyidenticalRule = True):
     else:
         Score = resultDict[scoreDict['Baseline']['Name']]
         threshold_hsim = scoreDict['Baseline']['Threshold.HSim']
-        threshold_dis = scoreDict['Baseline']['Threshold.Dis']        
-        if Score >= threshold_hsim:
-            Classification = 'HSim'
-            return(Score, Classification)
+        threshold_dis = scoreDict['Baseline']['Threshold.Dis']  
+        
+        ######
+        #           NO skipping of Similarity regression if the %ID is high enopugh 
+        #
+        #if Score >= threshold_hsim:
+        #    Classification = 'HSim'
+        #    return(Score, Classification)
+        #######
+        
+        
         # else:
         #     Classification = 'Amb'
         # ##Check if Amb/Dis
