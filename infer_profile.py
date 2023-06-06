@@ -115,7 +115,7 @@ def infer_profiles(fasta_file, dummy_dir="/tmp/", files_dir=files_dir,
     # columns = ["Query", "TF Name", "TF Matrix", "E-value", "Query Start-End",
     #     "TF Start-End", "DBD %ID", "Cis-BP", "JASPAR"]
     columns = ["Query", "TF Name", "TF Matrix", "E-value", "Query Start-End",
-        "TF Start-End", "DBD %ID"]
+        "TF Start-End", "DBD %ID", "SR_score", "ref UniprotID"]
     Jglobals.write(dummy_file, "\t".join(columns))
 
     # Infer SeqRecord profiles
@@ -239,7 +239,7 @@ def infer_SeqRecord_profiles(seq_record, cisbp, jaspar, dummy_dir="/tmp/",
                 model = cisbp[DBD]
             else:
                 model = cisbp[None]
-            _, Classification = ScoreAlignmentResult(sr_alignment, model)
+            SR_score, Classification = ScoreAlignmentResult(sr_alignment, model)
             inferences[0] = Classification == "HSim"
 
             # i.e. inferred result
@@ -250,11 +250,11 @@ def infer_SeqRecord_profiles(seq_record, cisbp, jaspar, dummy_dir="/tmp/",
                 #     r[3], round(sr_alignment["PctID_L"], 3), inferences[0],
                 #     inferences[1]])
                 inference_results.append([r[0], gene_name, matrix, r[4], r[2],
-                    r[3], round(sr_alignment["PctID_L"], 3)])
+                    r[3], round(sr_alignment["PctID_L"], 3),  str(SR_score)[0:5], r[1]])
             break
     
     # Sort
-    inference_results.sort(key=lambda x: (x[3], x[1], float(x[2][2:])))
+    inference_results.sort(key=lambda x: (float(x[-2]), x[1], float(x[2][2:])), reverse=True)
     # Remove profiles from older versions
     if latest:
         for i in sorted(frozenset(range(len(inference_results))), reverse=True):
